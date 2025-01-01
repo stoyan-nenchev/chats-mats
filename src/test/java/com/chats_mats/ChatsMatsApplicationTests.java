@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ChatMatsApplicationTests {
+class ChatsMatsApplicationTests {
 
 	@Test
 	void contextLoads() {

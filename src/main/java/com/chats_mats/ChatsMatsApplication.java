@@ -6,10 +6,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableTransactionManagement
-public class ChatMatsApplication {
+public class ChatsMatsApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ChatMatsApplication.class, args);
+		SpringApplication.run(ChatsMatsApplication.class, args);
 	}
 
 }
