@@ -1,0 +1,7 @@
+package com.chats_mats.enums;
+
+public enum MessageStatusType {
+    SENT,
+    DELIVERED,
+    SEEN
+}

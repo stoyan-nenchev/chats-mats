@@ -40,6 +40,6 @@ public class Channel extends BaseEntityAudit {
     )
     private List<User> members = new ArrayList<>();
 
-    @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "channel")
     private List<Message> messages = new ArrayList<>();
 }
