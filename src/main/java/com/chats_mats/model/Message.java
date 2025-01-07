@@ -1,6 +1,6 @@
 package com.chats_mats.model;
 
-import com.chats_mats.model.base.BaseEntityAudit;
+import com.chats_mats.model.base.BaseEntitySoftDelete;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "messages")
-public class Message extends BaseEntityAudit {
+public class Message extends BaseEntitySoftDelete {
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)

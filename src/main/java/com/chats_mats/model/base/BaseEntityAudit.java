@@ -19,8 +19,6 @@ public abstract class BaseEntityAudit extends BaseEntityId {
 
     private LocalDateTime updatedAt;
 
-    private LocalDateTime deletedAt;
-
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
@@ -30,13 +28,5 @@ public abstract class BaseEntityAudit extends BaseEntityId {
     @PreUpdate
     protected void onUpdate() {
         this.setUpdatedAt(LocalDateTime.now());
-    }
-
-    public void softDelete() {
-        this.setDeletedAt(LocalDateTime.now());
-    }
-
-    public boolean isDeleted() {
-        return deletedAt != null;
     }
 }

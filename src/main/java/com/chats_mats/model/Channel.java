@@ -1,7 +1,6 @@
 package com.chats_mats.model;
 
-import com.chats_mats.model.base.BaseEntityAudit;
-import jakarta.persistence.CascadeType;
+import com.chats_mats.model.base.BaseEntitySoftDelete;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -20,7 +19,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "channels")
-public class Channel extends BaseEntityAudit {
+public class Channel extends BaseEntitySoftDelete {
 
     @Column(nullable = false)
     private String name;

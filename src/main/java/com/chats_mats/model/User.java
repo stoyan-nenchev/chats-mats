@@ -1,6 +1,6 @@
 package com.chats_mats.model;
 
-import com.chats_mats.model.base.BaseEntityAudit;
+import com.chats_mats.model.base.BaseEntitySoftDelete;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "users")
-public class User extends BaseEntityAudit {
+public class User extends BaseEntitySoftDelete {
 
     @NotBlank
     private String username;
