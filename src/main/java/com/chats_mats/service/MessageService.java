@@ -26,6 +26,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MessageService {
 
+    private final int MESSAGES_DEFAULT_LIMIT = 50;
+
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
     private final ChannelRepository channelRepository;
@@ -72,7 +74,9 @@ public class MessageService {
 
     @Transactional(readOnly = true)
     public List<MessageDTO> getMessagesByChannel(UUID channelId) {
-        List<MessageProjection> messagesProjection = messageRepository.findMessagesWithStatuses(channelId, null);
+        List<MessageProjection> messagesProjection
+                = messageRepository.findMessagesWithStatuses(channelId, null, MESSAGES_DEFAULT_LIMIT);
+
         return messagesProjection.stream()
                 .map(messageMapper::toDTO)
                 .toList();
@@ -80,7 +84,9 @@ public class MessageService {
 
     @Transactional(readOnly = true)
     public List<MessageDTO> getMessagesByUser(UUID userId) {
-        List<MessageProjection> messagesProjection = messageRepository.findMessagesWithStatuses(null, userId);
+        List<MessageProjection> messagesProjection
+                = messageRepository.findMessagesWithStatuses(null, userId, MESSAGES_DEFAULT_LIMIT);
+
         return messagesProjection.stream()
                 .map(messageMapper::toDTO)
                 .toList();
