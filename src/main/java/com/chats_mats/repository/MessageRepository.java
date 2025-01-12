@@ -26,7 +26,6 @@ public interface MessageRepository extends JpaRepository<Message, UUID> {
         LEFT JOIN UserMessageStatus ums ON m.id = ums.message.id
         WHERE (:channelId IS NULL OR m.channel.id = :channelId)
             AND (:userId IS NULL OR m.receiver.id = :userId)
-        LIMIT :limit
     """)
-    List<MessageProjection> findMessagesWithStatuses(@Param("channelId") UUID channelId, @Param("userId") UUID userId, @Param("limit") int limit);
+    List<MessageProjection> findMessagesWithStatuses(@Param("channelId") UUID channelId, @Param("userId") UUID userId);
 }

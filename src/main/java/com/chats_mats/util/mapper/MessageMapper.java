@@ -29,6 +29,7 @@ public interface MessageMapper {
     @Mapping(target = "sentDate", source = "message.createdAt")
     MessageDTO toDTO(Message message, MessageStatusType statusType);
 
+    @Mapping(target = "id", source = "messageId")
     MessageDTO toDTO(MessageProjection projection);
 
     @Named("mapUserId")
