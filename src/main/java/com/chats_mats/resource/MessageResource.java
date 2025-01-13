@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/messages")
+@RequestMapping("/message")
 @RequiredArgsConstructor
 public class MessageResource {
 
