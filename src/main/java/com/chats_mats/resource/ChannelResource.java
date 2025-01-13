@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/channel")
+@RequestMapping("/channels")
 @RequiredArgsConstructor
 public class ChannelResource {
 

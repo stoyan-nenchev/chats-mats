@@ -1,7 +1,6 @@
 package com.chats_mats.resource;
 
 import com.chats_mats.dto.MessageDTO;
-import com.chats_mats.model.Message;
 import com.chats_mats.request.MessageRequest;
 import com.chats_mats.service.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/message")
+@RequestMapping("/messages")
 @RequiredArgsConstructor
 public class MessageResource {
 
@@ -28,13 +27,13 @@ public class MessageResource {
         return ResponseEntity.ok(messageService.sendMessage(messageRequest));
     }
 
-    @GetMapping("/channel/{channelId}")
+    @GetMapping("/channels/{channelId}")
     public ResponseEntity<List<MessageDTO>> getMessagesByChannel(@PathVariable UUID channelId) {
         List<MessageDTO> messages = messageService.getMessagesByChannel(channelId);
         return ResponseEntity.ok(messages);
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/users/{userId}")
     public ResponseEntity<List<MessageDTO>> getMessagesByUser(@PathVariable UUID userId) {
         List<MessageDTO> messages = messageService.getMessagesByUser(userId);
         return ResponseEntity.ok(messages);

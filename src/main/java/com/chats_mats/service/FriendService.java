@@ -17,13 +17,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class FriendService {
 
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
 
-    @Transactional
     public FriendDTO addFriend(FriendRequest friendRequest) {
         User sender = userRepository.findById(friendRequest.getSenderId())
                 .orElseThrow(() -> new NotFoundException("User sending the friend request was not found."));
@@ -50,7 +50,6 @@ public class FriendService {
         return friendDTO;
     }
 
-    @Transactional
     public FriendDTO blockFriend(FriendRequest friendRequest) {
         Friend friendToBlock = friendRepository.findByUserIdAndFriendId(friendRequest.getSenderId(), friendRequest.getReceiverId());
         friendToBlock.setStatus(FriendStatus.BLOCKED);
@@ -63,7 +62,6 @@ public class FriendService {
         return friendDTO;
     }
 
-    @Transactional
     public String removeFriend(FriendRequest friendRequest) {
         Friend initiator = friendRepository.findByUserIdAndFriendId(friendRequest.getSenderId(), friendRequest.getReceiverId());
 
@@ -83,7 +81,6 @@ public class FriendService {
                 .toList();
     }
 
-    @Transactional
     public FriendDTO acceptRequest(FriendRequest friendRequest) {
         Friend initiator = friendRepository.findByUserIdAndFriendId(friendRequest.getSenderId(), friendRequest.getReceiverId());
 
