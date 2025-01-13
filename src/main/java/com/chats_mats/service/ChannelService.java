@@ -2,7 +2,9 @@ package com.chats_mats.service;
 
 import com.chats_mats.dto.ChannelDTO;
 import com.chats_mats.model.Channel;
+import com.chats_mats.model.ChannelMember;
 import com.chats_mats.model.User;
+import com.chats_mats.repository.ChannelMemberRepository;
 import com.chats_mats.repository.ChannelRepository;
 import com.chats_mats.repository.UserRepository;
 import com.chats_mats.request.ChannelCreateRequest;
@@ -22,6 +24,7 @@ public class ChannelService {
 
     private final ChannelRepository channelRepository;
     private final UserRepository userRepository;
+    private final ChannelMemberRepository channelMemberRepository;
     private final ChannelMapper channelMapper;
 
     public ChannelDTO createChannel(ChannelCreateRequest request) {
@@ -50,7 +53,7 @@ public class ChannelService {
 
     public ChannelDTO updateChannel(UUID channelId, ChannelUpdateRequest request) {
         Channel channel = channelRepository.findById(channelId)
-                .orElseThrow(() -> new IllegalArgumentException("Channel not found."));
+                .orElseThrow(() -> new NotFoundException("Channel not found."));
         validateOwnerRequest(channel.getId(), request.getRequesterId());
 
         channel.setName(request.getName());
@@ -67,9 +70,14 @@ public class ChannelService {
         User user = userRepository.findById(request.getRequesterId())
                 .orElseThrow(() -> new NotFoundException("User not found."));
 
-        if (!channel.getMembers().contains(user)) {
-            channel.getMembers().add(user);
-            channelRepository.save(channel);
+        if (!channelMemberRepository.existsByUser_IdAndChannel_Id(user.getId(), channel.getId())) {
+            ChannelMember channelMember = new ChannelMember();
+            channelMember.setUser(user);
+            channelMember.setChannel(channel);
+            channelMember.setRole(request.getRole());
+            channelMemberRepository.save(channelMember);
+        } else {
+            throw new UnprocessableEntityException("Member is already a part of the channel.");
         }
 
         return channelMapper.toDTOWithMembers(channel);
@@ -77,15 +85,15 @@ public class ChannelService {
 
     public ChannelDTO removeMember(UUID channelId, ChannelMemberRequest request) {
         Channel channel = channelRepository.findById(channelId)
-                .orElseThrow(() -> new IllegalArgumentException("Channel not found."));
+                .orElseThrow(() -> new NotFoundException("Channel not found."));
 
         User user = userRepository.findById(request.getRequesterId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+                .orElseThrow(() -> new NotFoundException("User not found."));
 
-        if (channel.getMembers().contains(user)) {
-            channel.getMembers().remove(user);
-            channelRepository.save(channel);
-        }
+        ChannelMember channelMember = channelMemberRepository.findByUser_IdAndChannel_Id(user.getId(), channel.getId())
+                .orElseThrow(() -> new UnprocessableEntityException("User is already not a member in the channel."));
+
+        channelMemberRepository.delete(channelMember);
 
         return channelMapper.toDTOWithMembers(channel);
     }

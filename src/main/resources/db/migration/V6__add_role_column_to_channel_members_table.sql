@@ -1,0 +1,7 @@
+ALTER TABLE channel_members
+ADD COLUMN role VARCHAR(32) NOT NULL,
+ADD COLUMN created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+ADD COLUMN updated_at TIMESTAMP DEFAULT NULL,
+ADD COLUMN deleted_at TIMESTAMP DEFAULT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_channel_user ON channel_members(channel_id, user_id);

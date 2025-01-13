@@ -31,13 +31,8 @@ public class Channel extends BaseEntitySoftDelete {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @ManyToMany
-    @JoinTable(
-            name = "channel_members",
-            joinColumns = @JoinColumn(name = "channel_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> members = new ArrayList<>();
+    @OneToMany(mappedBy = "channel")
+    private List<ChannelMember> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "channel")
     private List<Message> messages = new ArrayList<>();
