@@ -1,16 +1,15 @@
-import ChatSidebar from "./components/ChatSidebar";
-import ChatWindow from "./components/ChatWindow";
+import ChatSidebar from "@/components/ChatSidebar";
+import ChatWindow from "@/components/ChatWindow";
 
 export default function Home() {
-  return (
-    <div className="flex h-full">
-      {/* Sidebar (friends and channels) */}
-      <ChatSidebar />
-
-      {/* Main Chat Window */}
-      <main className="flex-1 p-6 bg-gray-100">
-        <ChatWindow />
-      </main>
-    </div>
-  );
+    return (
+        <div className="flex flex-row flex-1 space-x-4 max-w-screen-xl mx-auto">
+            <section className="flex flex-none">
+                <ChatSidebar/>
+            </section>
+            <section className="flex flex-1">
+                <ChatWindow/>
+            </section>
+        </div>
+    );
 }

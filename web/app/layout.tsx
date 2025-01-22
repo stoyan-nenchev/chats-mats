@@ -1,19 +1,12 @@
-import { FC } from "react";
-import { Inter } from "next/font/google";
-import './globals.css';
-import { cn } from "@/lib/utils";
-
-const inter = Inter({ subsets: ["latin"] });
+import '@/globals.css';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={cn(inter.className, "h-full")}>
-        <div className="flex h-full">
-          <main className="flex-1 p-6 bg-gray-100">
+    <html lang="en" className="h-full">
+      <body className="min-h-screen flex flex-col">
+          <main className="flex flex-1 p-4">
             {children}
           </main>
-        </div>
       </body>
     </html>
   );
