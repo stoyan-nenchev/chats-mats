@@ -1,15 +1,20 @@
-import ChatSidebar from "@/components/ChatSidebar";
-import ChatWindow from "@/components/ChatWindow";
+import { LoginForm } from "@/components/LoginForm";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
+import { RegisterForm } from "./components/RegisterForm";
 
 export default function Home() {
     return (
-        <div className="flex flex-row flex-1 space-x-4 max-w-screen-xl mx-auto">
-            <section className="flex flex-none">
-                <ChatSidebar/>
-            </section>
-            <section className="flex flex-1">
-                <ChatWindow/>
-            </section>
-        </div>
+        <Tabs defaultValue="login" className="flex flex-col flex-1 max-w-screen-xl justify-center items-center w-[400px]">
+            <TabsList className="space-x-6">
+                <TabsTrigger value="login">Login</TabsTrigger>
+                <TabsTrigger value="register">Register</TabsTrigger>
+            </TabsList>
+            <TabsContent value="login">
+                <LoginForm />
+            </TabsContent>
+            <TabsContent value="register">
+                <RegisterForm />
+            </TabsContent>
+        </Tabs>
     );
 }

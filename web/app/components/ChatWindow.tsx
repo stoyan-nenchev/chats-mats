@@ -1,6 +1,7 @@
 import { FC } from "react";
 import ChatHead from "@/components/ChatHead";
 import {SendMessageForm} from "@/components/SendMessageForm";
+import ChatWindowMessage from "@/components/ChatWindowMessage";
 
 const ChatWindow: FC = () => {
   return (
@@ -11,14 +12,8 @@ const ChatWindow: FC = () => {
                   <ChatHead initials={"SN"} username={"kaaremass"}/>
               </div>
               <div className="flex flex-col flex-1">
-                  <div className="flex justify-start">
-                      <div className="bg-gray-100 p-3 rounded-lg max-w-xs">Hey there!</div>
-                  </div>
-                  <div className="flex justify-end">
-                      <div className="bg-blue-500 text-white p-3 rounded-lg max-w-xs">
-                          Hello! How are you?
-                      </div>
-                  </div>
+                  <ChatWindowMessage message={"Hey there!"} isReceived={true}/>
+                  <ChatWindowMessage message={"Hey, how are you?"} isReceived={false}/>
               </div>
           </div>
           <div className="mt-4 flex flex-row space-x-2">
