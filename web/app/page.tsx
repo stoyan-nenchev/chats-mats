@@ -1,6 +1,6 @@
 import { LoginForm } from "@/components/LoginForm";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
-import { RegisterForm } from "./components/RegisterForm";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { RegisterForm } from "@/components/RegisterForm";
 
 export default function Home() {
     return (
