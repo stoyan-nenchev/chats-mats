@@ -37,7 +37,7 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("auth/login", "auth/register")
+                        request.requestMatchers("/auth/login", "/auth/register")
                                 .permitAll()
                                 .anyRequest().authenticated())
                 .sessionManagement(session ->
@@ -58,6 +58,5 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-
 
 }

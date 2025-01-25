@@ -22,6 +22,7 @@ public abstract class BaseEntityAudit extends BaseEntityId {
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
+        this.setCreatedAt(now);
         this.setUpdatedAt(now);
     }
 

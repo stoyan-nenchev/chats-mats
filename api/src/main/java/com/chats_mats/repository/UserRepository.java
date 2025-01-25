@@ -12,12 +12,13 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
-    @Query("""
-            SELECT u FROM User u
-            WHERE :query IS NULL OR
-                (LOWER(u.username) LIKE LOWER(CONCAT('%', :query, '%'))
-                    OR LOWER(u.email) LIKE LOWER(CONCAT('%', :query, '%')))
-            """)
+
+    @Query(value = """
+    SELECT * FROM users u
+    WHERE :query IS NULL OR
+          (u.username ILIKE CONCAT('%', :query, '%')
+           OR u.email ILIKE CONCAT('%', :query, '%'))
+    """, nativeQuery = true)
     List<User> searchByUsernameOrEmail(@Param("query") String query);
 
     Optional<User> findByEmail(String email);
