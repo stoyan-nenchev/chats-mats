@@ -6,11 +6,12 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {redirect} from "next/navigation";
 
 const formSchema = z.object({
     email: z.string().email("The input must be a valid email."),
     password: z.string()
-        .min(8, "Password must contain a minimum of 8 characters.")
+        .min(6, "Password must contain a minimum of 6 characters.")
         .max(255, "Password cannot be longer than 255 characters.")
 })
 
@@ -23,13 +24,39 @@ export function LoginForm() {
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(values),
+            });
+
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error during login:', errorData.error || 'Login failed');
+                return;
+            }
+
+            const data = await response.json();
+            console.log('Login successful:', data);
+
+            redirect("/chats")
+        } catch (error) {
+            console.error('Error during login:', error);
+        }
     }
 
     return (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="min-w-72 max-w-sm space-y-2">
+          <form onSubmit={(event) => {
+              event.preventDefault()
+              void form.handleSubmit(onSubmit)(event)}} className="min-w-72 max-w-sm space-y-2">
             <FormField
               control={form.control}
               name="email"
