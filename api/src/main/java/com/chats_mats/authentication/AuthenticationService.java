@@ -1,6 +1,5 @@
 package com.chats_mats.authentication;
 
-import com.chats_mats.dto.UserDTO;
 import com.chats_mats.model.User;
 import com.chats_mats.repository.UserRepository;
 import com.chats_mats.request.LoginRequest;
@@ -24,10 +23,10 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserDTO register(UserRegisterRequest createRequest) {
+    public String register(UserRegisterRequest createRequest) {
         User userToCreate = userMapper.toNewEntity(createRequest, passwordEncoder);
         userRepository.save(userToCreate);
-        return userMapper.toDTO(userToCreate);
+        return login(new LoginRequest(createRequest.getEmail(), createRequest.getPassword()));
     }
 
     public String login(LoginRequest loginRequest) {

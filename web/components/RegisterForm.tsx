@@ -6,6 +6,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {useRouter} from "next/navigation";
 
 const formSchema = z.object({
     username: z.string().min(3).max(50),
@@ -25,6 +26,7 @@ const formSchema = z.object({
 );
 
 export function RegisterForm() {
+    const router = useRouter()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -35,8 +37,26 @@ export function RegisterForm() {
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        try {
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({username: values.username, email: values.email, password: values.password}),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error during login:', errorData.error || 'Login failed');
+                return;
+            }
+
+            router.push("/chats")
+        } catch (error) {
+            console.error('Error during login:', error);
+        }
     }
 
     return (

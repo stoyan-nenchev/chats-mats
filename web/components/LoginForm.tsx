@@ -15,9 +15,8 @@ const formSchema = z.object({
         .max(255, "Password cannot be longer than 255 characters.")
 })
 
-const router = useRouter()
-
 export function LoginForm() {
+    const router = useRouter()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {

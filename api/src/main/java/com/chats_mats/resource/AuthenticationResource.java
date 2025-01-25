@@ -1,7 +1,6 @@
 package com.chats_mats.resource;
 
 import com.chats_mats.authentication.AuthenticationService;
-import com.chats_mats.dto.UserDTO;
 import com.chats_mats.request.LoginRequest;
 import com.chats_mats.request.UserRegisterRequest;
 import jakarta.validation.Valid;
@@ -23,9 +22,9 @@ public class AuthenticationResource {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> create(@RequestBody @Valid UserRegisterRequest request) {
-        UserDTO createdUser = authenticationService.register(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+    public ResponseEntity<Map<String, String>> create(@RequestBody @Valid UserRegisterRequest request) {
+        String token = authenticationService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("token", token));
     }
 
     @PostMapping("/login")

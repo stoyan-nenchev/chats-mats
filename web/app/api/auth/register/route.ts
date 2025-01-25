@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 export async function POST(request: NextRequest) {
     const body = await request.json();
 
-    const response = await fetch(`${process.env.APP_URL}/auth/login`, {
+    const response = await fetch(`${process.env.APP_URL}/auth/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json(
-        { "message": "Successfully authenticated." },
+        { "message": "Successfully registered." },
         { status: 200 }
     );
 }
