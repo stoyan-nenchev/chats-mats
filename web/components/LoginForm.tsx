@@ -6,7 +6,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {redirect} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
     email: z.string().email("The input must be a valid email."),
@@ -14,6 +14,8 @@ const formSchema = z.object({
         .min(6, "Password must contain a minimum of 6 characters.")
         .max(255, "Password cannot be longer than 255 characters.")
 })
+
+const router = useRouter()
 
 export function LoginForm() {
     const form = useForm<z.infer<typeof formSchema>>({
@@ -34,19 +36,13 @@ export function LoginForm() {
                 body: JSON.stringify(values),
             });
 
-            console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
-
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error('Error during login:', errorData.error || 'Login failed');
                 return;
             }
 
-            const data = await response.json();
-            console.log('Login successful:', data);
-
-            redirect("/chats")
+            router.push("/chats")
         } catch (error) {
             console.error('Error during login:', error);
         }
