@@ -3,7 +3,6 @@ package com.chats_mats.service;
 import com.chats_mats.dto.UserDTO;
 import com.chats_mats.model.User;
 import com.chats_mats.repository.UserRepository;
-import com.chats_mats.request.UserCreateRequest;
 import com.chats_mats.request.UserUpdateRequest;
 import com.chats_mats.util.exception.NotFoundException;
 import com.chats_mats.util.mapper.UserMapper;
@@ -21,12 +20,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-
-    public UserDTO create(UserCreateRequest createRequest) {
-        User userToCreate = userMapper.toEntity(createRequest);
-        userRepository.save(userToCreate);
-        return userMapper.toDTO(userToCreate);
-    }
 
     public UserDTO update(UUID userId, UserUpdateRequest updateRequest) {
         User userToUpdate = userRepository.getReferenceById(userId);
