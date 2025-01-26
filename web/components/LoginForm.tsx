@@ -34,6 +34,7 @@ export function LoginForm() {
                 },
                 body: JSON.stringify(values),
             });
+            console.log("login response", response)
 
             if (!response.ok) {
                 const errorData = await response.json();

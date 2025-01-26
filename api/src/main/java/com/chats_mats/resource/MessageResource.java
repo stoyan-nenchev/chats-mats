@@ -3,6 +3,7 @@ package com.chats_mats.resource;
 import com.chats_mats.dto.MessageDTO;
 import com.chats_mats.request.MessageRequest;
 import com.chats_mats.service.MessageService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ public class MessageResource {
     private final MessageService messageService;
 
     @PostMapping
-    public ResponseEntity<MessageDTO> sendMessage(@RequestBody MessageRequest messageRequest) {
+    public ResponseEntity<MessageDTO> sendMessage(@RequestBody @Valid MessageRequest messageRequest) {
         return ResponseEntity.ok(messageService.sendMessage(messageRequest));
     }
 

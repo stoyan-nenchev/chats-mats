@@ -3,19 +3,24 @@ import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
     const token = request.cookies.get('token')?.value;
-    const response = NextResponse.next();
+    const fullUrl = request.url
+    const { pathname } = new URL(fullUrl);
 
-    if (!token) {
+    if (!token && pathname !== "/") {
         return NextResponse.redirect(new URL("/", request.url));
     }
 
-    response.headers.set('Authorization', `Bearer ${token}`);
-
     const url = request.nextUrl;
 
-    if (url.pathname === '/') {
+    if (token && url.pathname === '/') {
         return NextResponse.redirect(new URL("/chats", request.url));
     }
 
     return NextResponse.next();
 }
+
+export const config = {
+    matcher: [
+        '/((?!_next|api|favicon.ico|static|assets).*)',
+    ],
+};
