@@ -1,13 +1,15 @@
 import {FC} from "react";
 import {Avatar, AvatarFallback} from "@/components/ui/avatar";
+import RemoveFriendButton from "@/components/RemoveFriendButton";
 
 interface Props {
     initials: string;
     username: string;
     message: string;
+    onRemove: () => void;
 }
 
-const SidebarComponent: FC<Props> = ({initials, username, message}) => {
+const SidebarComponent: FC<Props> = ({initials, username, message, onRemove}) => {
     return (
         <div className="flex flex-row items-center">
             <Avatar className="m-2">
@@ -17,6 +19,7 @@ const SidebarComponent: FC<Props> = ({initials, username, message}) => {
                 <p>{username}</p>
                 <p>{message}</p>
             </div>
+            <RemoveFriendButton onClick={onRemove} />
         </div>
     );
 }

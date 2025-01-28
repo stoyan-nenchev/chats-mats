@@ -3,9 +3,9 @@ import {cookies} from "next/headers";
 
 export async function GET(
     request: Request,
-    { params }: { params: { userId: string } }
+    { params }: { params: Promise<{ userId: string }> }
 ) {
-    const { userId } = params;
+    const userId= (await params).userId;
     const token = (await cookies()).get('token')?.value;
 
     if (!token) {

@@ -4,6 +4,7 @@ import com.chats_mats.model.User;
 import com.chats_mats.repository.UserRepository;
 import com.chats_mats.request.LoginRequest;
 import com.chats_mats.request.UserRegisterRequest;
+import com.chats_mats.util.exception.NotFoundException;
 import com.chats_mats.util.exception.UnauthorizedException;
 import com.chats_mats.util.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +39,9 @@ public class AuthenticationService {
         if (!authentication.isAuthenticated()) {
             throw new UnauthorizedException("Unable to authenticate.");
         }
+        User foundUser = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new NotFoundException("User not found."));
 
-        return jwtService.generateToken(loginRequest.getEmail());
+        return jwtService.generateToken(loginRequest.getEmail(), foundUser.getId());
     }
 }

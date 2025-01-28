@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: "No token provided." }, { status: 401 });
     }
 
-    const userId = getUserIdFromToken(token);
+    const userId = await getUserIdFromToken(token);
 
     if (!userId) {
         return NextResponse.json({ error: "Invalid or expired token." }, { status: 403 });

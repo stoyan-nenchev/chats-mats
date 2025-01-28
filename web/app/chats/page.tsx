@@ -30,13 +30,17 @@ export default function ChatsPage() {
         fetchSenderId();
     }, []);
 
+    if (!senderId) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div className="flex flex-row flex-1 space-x-4 max-w-screen-xl mx-auto">
             <section className="flex flex-none">
                 <ChatSidebar/>
             </section>
             <section className="flex flex-1">
-                <ChatWindow senderId={senderId!} receiverId={receiverId} channelId={channelId} />
+                <ChatWindow senderId={senderId} receiverId={receiverId} channelId={channelId} />
             </section>
         </div>
     );

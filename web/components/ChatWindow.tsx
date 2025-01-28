@@ -1,6 +1,6 @@
 import {FC, useEffect, useState} from "react";
 import ChatHead from "@/components/ChatHead";
-import {SendMessageForm} from "@/components/SendMessageForm";
+import {SendMessageForm} from "@/components/forms/SendMessageForm";
 import ChatWindowMessage from "@/components/ChatWindowMessage";
 
 interface Props {

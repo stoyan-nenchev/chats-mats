@@ -1,6 +1,6 @@
-import { LoginForm } from "@/components/LoginForm";
+import { LoginForm } from "@/components/forms/LoginForm";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { RegisterForm } from "@/components/RegisterForm";
+import { RegisterForm } from "@/components/forms/RegisterForm";
 
 export default function Home() {
     return (

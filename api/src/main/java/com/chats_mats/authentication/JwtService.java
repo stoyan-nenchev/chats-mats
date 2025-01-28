@@ -12,6 +12,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -31,8 +32,9 @@ public class JwtService {
         this.jwtRefreshTime = jwtRefreshTime;
     }
 
-    public String generateToken(String email) {
+    public String generateToken(String email, UUID userId) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);
 
         return Jwts.builder()
                 .claims().add(claims)

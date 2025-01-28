@@ -1,6 +1,8 @@
 package com.chats_mats.service;
 
 import com.chats_mats.dto.ChannelDTO;
+import com.chats_mats.dto.ShortChannelDTO;
+import com.chats_mats.enums.ChannelMemberRole;
 import com.chats_mats.model.Channel;
 import com.chats_mats.model.ChannelMember;
 import com.chats_mats.model.User;
@@ -10,12 +12,14 @@ import com.chats_mats.repository.UserRepository;
 import com.chats_mats.request.ChannelCreateRequest;
 import com.chats_mats.request.ChannelMemberRequest;
 import com.chats_mats.request.ChannelUpdateRequest;
+import com.chats_mats.util.mapper.ChannelMapper;
 import com.chats_mats.util.exception.NotFoundException;
 import com.chats_mats.util.exception.UnprocessableEntityException;
-import com.chats_mats.util.mapper.ChannelMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,6 +31,7 @@ public class ChannelService {
     private final ChannelMemberRepository channelMemberRepository;
     private final ChannelMapper channelMapper;
 
+    @Transactional
     public ChannelDTO createChannel(ChannelCreateRequest request) {
         User owner = userRepository.findById(request.getRequesterId())
                 .orElseThrow(() -> new NotFoundException("User not found."));
@@ -37,6 +42,12 @@ public class ChannelService {
         channel.setOwner(owner);
 
         channelRepository.save(channel);
+
+        ChannelMember channelMember = new ChannelMember();
+        channelMember.setUser(owner);
+        channelMember.setChannel(channel);
+        channelMember.setRole(ChannelMemberRole.OWNER);
+        channelMemberRepository.save(channelMember);
 
         return channelMapper.toDTO(channel);
     }
@@ -96,6 +107,12 @@ public class ChannelService {
         channelMemberRepository.delete(channelMember);
 
         return channelMapper.toDTOWithMembers(channel);
+    }
+
+    public List<ShortChannelDTO> getChannels(UUID userId) {
+        return channelRepository.findChannelsForUser(userId).stream()
+                .map(channelMapper::toShortDTO)
+                .toList();
     }
 
     private void validateOwnerRequest(UUID channelId, UUID ownerId) {

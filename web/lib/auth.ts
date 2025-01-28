@@ -1,25 +1,17 @@
 "use server"
 
-import jwt from 'jsonwebtoken';
+import {jwtDecode} from "jwt-decode";
+import {JWTPayload} from '@/lib/jwtPayload';
 
 export async function getUserIdFromToken(token: string | undefined): Promise<string | null> {
     if (!token) return null;
-
     try {
-        const decoded: any = await new Promise((resolve, reject) => {
-            jwt.verify(token, process.env.JWT_SECRET as string, (err, decoded) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(decoded);
-                }
-            });
-        });
-
-        return decoded.userId;
+        const decoded = jwtDecode(token)
+        const jwtPayload = new JWTPayload(decoded)
+        return jwtPayload.userId;
     } catch (error) {
         console.error('Error decoding JWT token:', error);
         return null;
     }
-};
+}
 

@@ -1,6 +1,7 @@
 package com.chats_mats.resource;
 
 import com.chats_mats.dto.ChannelDTO;
+import com.chats_mats.dto.ShortChannelDTO;
 import com.chats_mats.request.ChannelCreateRequest;
 import com.chats_mats.request.ChannelMemberRequest;
 import com.chats_mats.request.ChannelUpdateRequest;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,6 +29,12 @@ import java.util.UUID;
 public class ChannelResource {
 
     private final ChannelService channelService;
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<ShortChannelDTO>> getChannels(@PathVariable UUID userId) {
+        List<ShortChannelDTO> channels = channelService.getChannels(userId);
+        return ResponseEntity.ok(channels);
+    }
 
     @PostMapping
     public ResponseEntity<ChannelDTO> createChannel(@RequestBody @Valid ChannelCreateRequest request) {
