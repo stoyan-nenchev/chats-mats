@@ -11,7 +11,11 @@ const formSchema = z.object({
     query: z.string().max(50),
 })
 
-export function SearchUserForm() {
+interface SearchUserFormProps {
+    onResults: (users: { id: string; username: string; email: string }[]) => void;
+}
+
+export function SearchUserForm({ onResults }: SearchUserFormProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -19,8 +23,20 @@ export function SearchUserForm() {
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        try {
+            const response = await fetch(`/api/users?query=${values.query}`);
+            if (response.ok) {
+                const data = await response.json();
+                onResults(data);
+            } else {
+                console.error("Failed to search users");
+                onResults([]);
+            }
+        } catch (error) {
+            console.error("Error searching users:", error);
+            onResults([]);
+        }
     }
 
     return (

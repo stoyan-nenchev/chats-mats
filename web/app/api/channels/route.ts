@@ -22,8 +22,7 @@ export async function GET(request: NextRequest) {
     }
     const userId = await getUserIdFromToken(token);
 
-    const response = await fetch(`${process.env.BACKEND_URL}/channels/${userId}`, {
-        method: 'POST',
+    const response = await fetch(`${process.env.APP_URL}/channels/${userId}`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
@@ -50,7 +49,7 @@ export async function POST(request: NextRequest) {
     const body: ChannelCreateRequest = await request.json();
     body.requesterId = userId!;
 
-    const response = await fetch(`${process.env.BACKEND_URL}/channels`, {
+    const response = await fetch(`${process.env.APP_URL}/channels`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

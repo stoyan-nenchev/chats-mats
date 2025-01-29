@@ -4,14 +4,14 @@ import {cookies} from "next/headers";
 export async function POST(request: Request) {
 
     const cookieStore = await cookies()
-    const token = cookieStore.get('token')
+    const token = cookieStore.get('token')?.value
     if (!token) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const messageRequest = await request.json();
 
-    const response = await fetch(`${process.env.BACKEND_URL}/messages`, {
+    const response = await fetch(`${process.env.APP_URL}/messages`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

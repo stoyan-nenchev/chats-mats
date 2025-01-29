@@ -1,5 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
 import {cookies} from "next/headers";
+import {getUserIdFromToken} from "@/lib/auth";
 
 interface ChannelUpdateRequest {
     name?: string;
@@ -10,22 +11,23 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const channelId = (await (params)).channelId;
 
     const cookieStore = await cookies();
-    const token = cookieStore.get('token');
+    const token = cookieStore.get('token')?.value;
     if (!token) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const url = new URL(request.url);
-    const initiatorId = url.searchParams.get('initiatorId');
+    const initiatorId = await getUserIdFromToken(token);
 
-    const response = await fetch(`${process.env.BACKEND_URL}/channels/${channelId}?initiatorId=${initiatorId}`, {
+    const response = await fetch(`${process.env.APP_URL}/channels/${channelId}?initiatorId=${initiatorId}`, {
         method: 'DELETE',
         headers: {
+            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
     });
 
     const data = await response.json();
+    console.log(data)
 
     if (!response.ok) {
         return NextResponse.json({ error: data.message }, { status: response.status });
@@ -38,14 +40,14 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const channelId = (await (params)).channelId;
 
     const cookieStore = await cookies();
-    const token = cookieStore.get('token');
+    const token = cookieStore.get('token')?.value;
     if (!token) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body: ChannelUpdateRequest = await request.json();
 
-    const response = await fetch(`${process.env.BACKEND_URL}/channels/${channelId}`, {
+    const response = await fetch(`${process.env.APP_URL}/channels/${channelId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -50,9 +51,9 @@ public class FriendResource {
     }
 
     @DeleteMapping("/remove")
-    public ResponseEntity<String> removeFriend(@RequestBody @Valid FriendRequest friendRequest) {
+    public ResponseEntity<Map<String, String>> removeFriend(@RequestBody @Valid FriendRequest friendRequest) {
         String message = friendService.removeFriend(friendRequest);
-        return ResponseEntity.ok(message);
+        return ResponseEntity.ok(Map.of("message", message));
     }
 
 }

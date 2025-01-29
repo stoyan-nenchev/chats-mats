@@ -25,6 +25,23 @@ public class FriendService {
     private final UserRepository userRepository;
 
     public FriendDTO addFriend(FriendRequest friendRequest) {
+        if (friendRepository.existsByUserIdAndFriendId(friendRequest.getSenderId(), friendRequest.getReceiverId())) {
+            Friend existingFriend = friendRepository.findByUserIdAndFriendId(friendRequest.getSenderId(), friendRequest.getReceiverId());
+            Friend matchingFriend = friendRepository.findByUserIdAndFriendId(friendRequest.getReceiverId(), friendRequest.getSenderId());
+
+            existingFriend.setStatus(FriendStatus.SENT);
+            existingFriend.setDeletedAt(null);
+            matchingFriend.setStatus(FriendStatus.RECEIVED);
+            matchingFriend.setDeletedAt(null);
+            friendRepository.saveAll(List.of(existingFriend, matchingFriend));
+
+            FriendDTO friendDTO = new FriendDTO();
+            friendDTO.setId(existingFriend.getFriend().getId());
+            friendDTO.setUsername(existingFriend.getFriend().getUsername());
+            friendDTO.setStatus(existingFriend.getStatus());
+            return friendDTO;
+        }
+
         User sender = userRepository.findById(friendRequest.getSenderId())
                 .orElseThrow(() -> new NotFoundException("User sending the friend request was not found."));
 

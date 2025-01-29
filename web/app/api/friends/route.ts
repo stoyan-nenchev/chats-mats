@@ -9,15 +9,17 @@ interface FriendRequest {
 
 export async function GET(request: NextRequest) {
     const cookieStore = await cookies();
-    const token = cookieStore.get('token');
+    const token = cookieStore.get('token')?.value;
     if (!token) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const userId = await getUserIdFromToken(token);
-    const response = await fetch(`${process.env.BACKEND_URL}/friends/${userId}`, {
+
+    const response = await fetch(`${process.env.APP_URL}/friends/${userId}`, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
         },
     });
 
@@ -32,7 +34,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     const cookieStore = await cookies();
-    const token = cookieStore.get('token');
+    const token = cookieStore.get('token')?.value;
+
     if (!token) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -40,7 +43,7 @@ export async function POST(request: NextRequest) {
     const body: FriendRequest = await request.json();
     body.senderId = await getUserIdFromToken(token);
 
-    const response = await fetch(`${process.env.BACKEND_URL}/friends/add`, {
+    const response = await fetch(`${process.env.APP_URL}/friends/add`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -60,14 +63,15 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
     const cookieStore = await cookies();
-    const token = cookieStore.get('token');
+    const token = cookieStore.get('token')?.value;
     if (!token) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body: FriendRequest = await request.json();
+    body.senderId = await getUserIdFromToken(token);
 
-    const response = await fetch(`${process.env.BACKEND_URL}/friends/remove`, {
+    const response = await fetch(`${process.env.APP_URL}/friends/remove`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',

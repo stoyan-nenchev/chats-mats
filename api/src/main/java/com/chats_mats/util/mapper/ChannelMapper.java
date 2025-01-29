@@ -34,7 +34,7 @@ public interface ChannelMapper {
     @Mapping(target = "id", source = "channelId")
     ShortChannelDTO toShortDTO(ChannelProjection projection);
 
-    @Mapping(target = "owner", source = "channel", qualifiedByName = "isOwnerMap")
+    @Mapping(target = "owner", expression = "java(isOwnerMap(channel, userId))")
     ShortChannelDTO toShortDTO(Channel channel, @Context UUID userId);
 
     @Named("isOwnerMap")

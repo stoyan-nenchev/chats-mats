@@ -19,24 +19,34 @@ import AddFriendModel from "@/components/AddFriendModel";
 import {CreateChannelForm} from "@/components/forms/CreateChannelForm";
 import CreateIcon from "@/components/icons/CreateIcon";
 
+interface SearchedUser {
+    id: string;
+    username: string;
+    email: string;
+}
+
 interface Friend {
     id: string;
-    initials: string;
     username: string;
+    status: string;
     message: string;
 }
 
 interface Channel {
     id: string;
-    initials: string;
-    username: string;
+    name: string;
     message: string;
 }
 
 const ChatSidebar: FC = () => {
+    const [searchResults, setSearchResults] = useState<SearchedUser[]>([]);
     const [friends, setFriends] = useState<Friend[]>([]);
     const [channels, setChannels] = useState<Channel[]>([]);
     const router = useRouter()
+
+    const handleSearchResults = (users: SearchedUser[]) => {
+        setSearchResults(users);
+    };
 
     useEffect(() => {
         const fetchSidebarData = async () => {
@@ -59,6 +69,32 @@ const ChatSidebar: FC = () => {
 
         fetchSidebarData();
     }, []);
+
+    const handleAddFriend = async (userId: string) => {
+        const isFriend = friends.some(friend => friend.id === userId);
+
+        if (isFriend) {
+            console.log("This user is already your friend.");
+            return;
+        }
+        try {
+            const response = await fetch("/api/friends", {
+                method: "POST",
+                body: JSON.stringify({ receiverId: userId }),
+                headers: { "Content-Type": "application/json" },
+            });
+
+            if (response.ok) {
+                const newFriend = await response.json();
+                setFriends((prev) => [...prev, newFriend]);
+                console.log("Friend request added.")
+            } else {
+                console.error("Failed to send friend request");
+            }
+        } catch (error) {
+            console.error("Error sending friend request:", error);
+        }
+    };
 
     const handleRemoveFriend = async (id: string) => {
         try {
@@ -83,6 +119,7 @@ const ChatSidebar: FC = () => {
 
     const handleRemoveChannel = async (channelId: string) => {
         try {
+            console.log(channelId)
             const response = await fetch(`/api/channels/${channelId}`, {
                 method: "DELETE",
             });
@@ -135,14 +172,20 @@ const ChatSidebar: FC = () => {
                                     <DialogDescription>
                                         You still need to be cautious as there can be imposters.
                                     </DialogDescription>
-                                    <SearchUserForm />
+                                    <SearchUserForm onResults={handleSearchResults} />
                                     <div className="flex flex-col border rounded-xl space-y-2 p-2 max-h-64 overflow-y-auto">
-                                        <AddFriendModel initials={"SN"} username={"kaaremass"} email={"this is message place"}/>
-                                        <AddFriendModel initials={"SN"} username={"kaaremass"} email={"this is message place"}/>
-                                        <AddFriendModel initials={"SN"} username={"kaaremass"} email={"this is message place"}/>
-                                        <AddFriendModel initials={"SN"} username={"kaaremass"} email={"this is message place"}/>
-                                        <AddFriendModel initials={"SN"} username={"kaaremass"} email={"this is message place"}/>
-                                        <AddFriendModel initials={"SN"} username={"kaaremass"} email={"this is message place"}/>
+                                        {searchResults.length > 0 ? (
+                                            searchResults.map(user => (
+                                                <AddFriendModel
+                                                    key={user.id}
+                                                    username={user.username}
+                                                    email={user.email}
+                                                    userId={user.id}
+                                                    onAddFriend={handleAddFriend} />
+                                            ))
+                                        ) : (
+                                            <p className="text-gray-500 text-sm">No results found</p>
+                                        )}
                                     </div>
                                 </DialogHeader>
                             </DialogContent>
@@ -153,10 +196,10 @@ const ChatSidebar: FC = () => {
                         {friends.map((friend) => (
                             <SidebarComponent
                                 key={friend.id}
-                                initials={friend.initials}
                                 username={friend.username}
                                 message={friend.message}
                                 onRemove={() => handleRemoveFriend(friend.id)}
+                                badge={friend.status}
                             />
                         ))}
                     </div>
@@ -181,10 +224,10 @@ const ChatSidebar: FC = () => {
                         {channels.map((channel) => (
                             <SidebarComponent
                                 key={channel.id}
-                                initials={channel.initials}
-                                username={channel.username}
+                                username={channel.name}
                                 message={channel.message}
                                 onRemove={() => handleRemoveChannel(channel.id)}
+                                badge={null}
                             />
                         ))}
                     </div>

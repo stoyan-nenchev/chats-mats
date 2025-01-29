@@ -10,14 +10,14 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const id = (await params).id;
 
     const cookieStore = await cookies();
-    const token = cookieStore.get('token');
+    const token = cookieStore.get('token')?.value;
     if (!token) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body: UserUpdateRequest = await request.json();
 
-    const response = await fetch(`${process.env.BACKEND_URL}/users/${id}`, {
+    const response = await fetch(`${process.env.APP_URL}/users/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -39,14 +39,15 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const id = (await params).id;
 
     const cookieStore = await cookies();
-    const token = cookieStore.get('token');
+    const token = cookieStore.get('token')?.value;
     if (!token) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const response = await fetch(`${process.env.BACKEND_URL}/users/${id}`, {
+    const response = await fetch(`${process.env.APP_URL}/users/${id}`, {
         method: 'DELETE',
         headers: {
+            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
     });

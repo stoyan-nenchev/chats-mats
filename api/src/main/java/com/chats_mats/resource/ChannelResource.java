@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -37,17 +38,17 @@ public class ChannelResource {
     }
 
     @PostMapping
-    public ResponseEntity<ChannelDTO> createChannel(@RequestBody @Valid ChannelCreateRequest request) {
-        ChannelDTO channel = channelService.createChannel(request);
+    public ResponseEntity<ShortChannelDTO> createChannel(@RequestBody @Valid ChannelCreateRequest request) {
+        ShortChannelDTO channel = channelService.createChannel(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(channel);
     }
 
     @DeleteMapping("/{channelId}")
-    public ResponseEntity<String> deleteChannel(
+    public ResponseEntity<Map<String, String>> deleteChannel(
             @PathVariable UUID channelId,
             @RequestParam UUID initiatorId) {
         String message = channelService.deleteChannel(channelId, initiatorId);
-        return ResponseEntity.ok(message);
+        return ResponseEntity.ok(Map.of("message", message));
     }
 
     @PutMapping("/{channelId}")

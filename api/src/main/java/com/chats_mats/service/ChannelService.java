@@ -32,7 +32,7 @@ public class ChannelService {
     private final ChannelMapper channelMapper;
 
     @Transactional
-    public ChannelDTO createChannel(ChannelCreateRequest request) {
+    public ShortChannelDTO createChannel(ChannelCreateRequest request) {
         User owner = userRepository.findById(request.getRequesterId())
                 .orElseThrow(() -> new NotFoundException("User not found."));
 
@@ -49,7 +49,7 @@ public class ChannelService {
         channelMember.setRole(ChannelMemberRole.OWNER);
         channelMemberRepository.save(channelMember);
 
-        return channelMapper.toDTO(channel);
+        return channelMapper.toShortDTO(channel, owner.getId());
     }
 
     public String deleteChannel(UUID channelId, UUID initiatorId) {

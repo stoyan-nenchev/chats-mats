@@ -12,7 +12,7 @@ export async function GET(
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const response = await fetch(`${process.env.BACKEND_URL}/messages/users/${userId}`, {
+    const response = await fetch(`${process.env.APP_URL}/messages/users/${userId}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
