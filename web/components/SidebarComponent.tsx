@@ -8,9 +8,11 @@ interface Props {
     message: string;
     badge: string | null;
     onRemove: () => void;
+    onClick?: () => void;
+    isSelected?: boolean;
 }
 
-const SidebarComponent: FC<Props> = ({username, message, onRemove, badge}) => {
+const SidebarComponent: FC<Props> = ({username, message, onRemove, badge, onClick, isSelected}) => {
     const getInitials = (name: string) => {
         return name
             .split(" ")
@@ -21,7 +23,9 @@ const SidebarComponent: FC<Props> = ({username, message, onRemove, badge}) => {
     };
 
     return (
-        <div className="flex flex-row items-center">
+        <div className={`flex flex-row items-center ${isSelected ? "bg-blue-500 text-white" : "hover:bg-gray-100"}`}
+            onClick={onClick}
+        >
             <Avatar className="m-2">
                 <AvatarFallback>{getInitials(username)}</AvatarFallback>
             </Avatar>

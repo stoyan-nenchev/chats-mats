@@ -115,6 +115,12 @@ public class ChannelService {
                 .toList();
     }
 
+    public ChannelDTO getChannelById(UUID id) {
+        Channel channel = channelRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Channel not found."));
+        return channelMapper.toDTO(channel);
+    }
+
     private void validateOwnerRequest(UUID channelId, UUID ownerId) {
         if (!channelRepository.existsByIdAndOwner_Id(channelId, ownerId)) {
             throw new UnprocessableEntityException("Requester is not the owner of the channel.");

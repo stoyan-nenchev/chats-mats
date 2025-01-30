@@ -38,14 +38,20 @@ interface Channel {
     message: string;
 }
 
-const ChatSidebar: FC = () => {
+const ChatSidebar: FC<{ onSelectChat: (receiverId?: string, channelId?: string) => void }> = ({ onSelectChat }) => {
     const [searchResults, setSearchResults] = useState<SearchedUser[]>([]);
     const [friends, setFriends] = useState<Friend[]>([]);
     const [channels, setChannels] = useState<Channel[]>([]);
+    const [selectedChat, setSelectedChat] = useState<{ receiverId?: string; channelId?: string } | null>(null);
     const router = useRouter()
 
     const handleSearchResults = (users: SearchedUser[]) => {
         setSearchResults(users);
+    };
+
+    const handleSelect = (receiverId?: string, channelId?: string) => {
+        setSelectedChat({ receiverId, channelId });
+        onSelectChat(receiverId, channelId);
     };
 
     useEffect(() => {
@@ -53,7 +59,7 @@ const ChatSidebar: FC = () => {
             try {
                 const [friendsResponse, channelsResponse] = await Promise.all([
                     fetch("/api/friends"),
-                    fetch("/api/channels"),
+                    fetch("/api/channels/users"),
                 ]);
 
                 if (friendsResponse.ok && channelsResponse.ok) {
@@ -200,6 +206,8 @@ const ChatSidebar: FC = () => {
                                 message={friend.message}
                                 onRemove={() => handleRemoveFriend(friend.id)}
                                 badge={friend.status}
+                                onClick={() => handleSelect(friend.id, undefined)}
+                                isSelected={selectedChat?.receiverId === friend.id}
                             />
                         ))}
                     </div>
@@ -228,6 +236,8 @@ const ChatSidebar: FC = () => {
                                 message={channel.message}
                                 onRemove={() => handleRemoveChannel(channel.id)}
                                 badge={null}
+                                onClick={() => handleSelect(undefined, channel.id)}
+                                isSelected={selectedChat?.channelId === channel.id}
                             />
                         ))}
                     </div>

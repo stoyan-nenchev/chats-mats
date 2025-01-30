@@ -12,17 +12,19 @@ interface Props {
 const ChatWindow: FC<Props> = ({ senderId, receiverId, channelId }) => {
     const [messages, setMessages] = useState<{ message: string; isReceived: boolean }[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [chatName, setChatName] = useState<string>("");
 
     useEffect(() => {
         const fetchMessages = async () => {
+            if (!channelId && !receiverId) {
+                return;
+            }
             try {
                 let fetchedMessages;
                 if (channelId) {
                     fetchedMessages = await fetchMessagesByChannel(channelId);
                 } else if (receiverId) {
                     fetchedMessages = await fetchMessagesByUser(receiverId);
-                } else {
-                    throw new Error("Either channelId or receiverId must be provided.");
                 }
 
                 setMessages(
@@ -38,6 +40,34 @@ const ChatWindow: FC<Props> = ({ senderId, receiverId, channelId }) => {
 
         fetchMessages();
     }, [channelId, receiverId, senderId]);
+
+    useEffect(() => {
+        const fetchChatName = async () => {
+            if (channelId) {
+                const data = await fetchChannelDetails(channelId);
+                setChatName(data.channelName);
+            } else if (receiverId) {
+                const data = await fetchUserDetails(receiverId);
+                setChatName(data.username);
+            } else {
+                setChatName("");
+            }
+        };
+
+        fetchChatName();
+    }, [channelId, receiverId]);
+
+    const fetchChannelDetails = async (channelId: string) => {
+        const response = await fetch(`/api/channels/${channelId}`);
+        if (!response.ok) throw new Error("Failed to fetch messages by channel.");
+        return response.json();
+    };
+
+    const fetchUserDetails = async (id: string) => {
+        const response = await fetch(`/api/users/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch messages by user.");
+        return response.json();
+    };
 
     const fetchMessagesByChannel = async (channelId: string) => {
         const response = await fetch(`/api/messages/channels/${channelId}`);
@@ -56,7 +86,7 @@ const ChatWindow: FC<Props> = ({ senderId, receiverId, channelId }) => {
           <div className="flex flex-col flex-1 overflow-y-auto space-y-4">
 
               <div className="pb-2 border-b-2">
-                  <ChatHead initials={"SN"} username={"kaaremass"}/>
+                  <ChatHead name={chatName || "Select a chat"}/>
               </div>
               <div className="flex flex-col flex-1">
                   {error ? (

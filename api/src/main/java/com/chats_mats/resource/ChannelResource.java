@@ -31,10 +31,16 @@ public class ChannelResource {
 
     private final ChannelService channelService;
 
-    @GetMapping("/{userId}")
+    @GetMapping("/users/{userId}")
     public ResponseEntity<List<ShortChannelDTO>> getChannels(@PathVariable UUID userId) {
         List<ShortChannelDTO> channels = channelService.getChannels(userId);
         return ResponseEntity.ok(channels);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ChannelDTO> getChannel(@PathVariable UUID id) {
+        ChannelDTO channel = channelService.getChannelById(id);
+        return ResponseEntity.ok(channel);
     }
 
     @PostMapping

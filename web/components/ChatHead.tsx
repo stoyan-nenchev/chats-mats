@@ -2,17 +2,25 @@ import {FC} from "react";
 import {Avatar, AvatarFallback} from "@/components/ui/avatar";
 
 interface Props {
-    initials: string;
-    username: string;
+    name: string;
 }
 
-const ChatHead: FC<Props> = ({initials, username}) => {
+const ChatHead: FC<Props> = ({name}) => {
+    const getInitials = (name: string) => {
+        return name
+            .split(" ")
+            .map(word => word[0])
+            .join("")
+            .substring(0, 2)
+            .toUpperCase();
+    };
+
     return (
         <div className="flex flex-row items-center m-2 space-x-2">
             <Avatar>
-                <AvatarFallback>{initials}</AvatarFallback>
+                <AvatarFallback>{getInitials(name)}</AvatarFallback>
             </Avatar>
-            <p>{username}</p>
+            <p>{name}</p>
         </div>
     );
 }

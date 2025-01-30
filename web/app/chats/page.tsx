@@ -30,6 +30,11 @@ export default function ChatsPage() {
         fetchSenderId();
     }, []);
 
+    const handleSelectChat = (newReceiverId?: string, newChannelId?: string) => {
+        setReceiverId(newReceiverId || null);
+        setChannelId(newChannelId || null);
+    };
+
     if (!senderId) {
         return <div>Loading...</div>;
     }
@@ -37,7 +42,7 @@ export default function ChatsPage() {
     return (
         <div className="flex flex-row flex-1 space-x-4 max-w-screen-xl mx-auto">
             <section className="flex flex-none">
-                <ChatSidebar/>
+                <ChatSidebar onSelectChat={handleSelectChat} />
             </section>
             <section className="flex flex-1">
                 <ChatWindow senderId={senderId} receiverId={receiverId} channelId={channelId} />

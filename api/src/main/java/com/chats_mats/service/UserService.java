@@ -29,6 +29,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public UserDTO getById(UUID id) {
+        return userMapper.toDTO(userRepository.getReferenceById(id));
+    }
+
+    @Transactional(readOnly = true)
     public List<UserDTO> search(String query) {
         return userRepository.searchByUsernameOrEmail(query).stream()
                 .map(userMapper::toDTO)

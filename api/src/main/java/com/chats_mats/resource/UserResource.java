@@ -30,6 +30,11 @@ public class UserResource {
         return ResponseEntity.ok(userService.search(query));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> get(@PathVariable UUID id) {
+        return ResponseEntity.ok(userService.getById(id));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable UUID id, @RequestBody @Valid UserUpdateRequest request) {
         UserDTO updatedUser = userService.update(id, request);
