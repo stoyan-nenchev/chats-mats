@@ -36,8 +36,9 @@ public class SecurityConfig {
 
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/auth/login", "/auth/register")
+                        request.requestMatchers("/auth/login", "/auth/register", "/error")
                                 .permitAll()
                                 .anyRequest().authenticated())
                 .sessionManagement(session ->

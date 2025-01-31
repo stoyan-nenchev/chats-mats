@@ -23,6 +23,7 @@ public interface MessageMapper {
     Message toEntity(MessageRequest messageRequest);
 
     @Mapping(target = "content", source = "message.content")
+    @Mapping(target = "senderId", source = "message.sender", qualifiedByName = "mapUserId")
     @Mapping(target = "receiverId", source = "message.receiver", qualifiedByName = "mapUserId")
     @Mapping(target = "channelId", source = "message.channel", qualifiedByName = "mapChannelId")
     @Mapping(target = "status", source = "statusType")

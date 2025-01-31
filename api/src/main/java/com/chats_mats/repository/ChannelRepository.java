@@ -18,6 +18,7 @@ public interface ChannelRepository extends JpaRepository<Channel, UUID> {
                 SELECT
                     c.id AS channelId,
                     c.name AS name,
+                    c.description AS description,
                     CASE
                         WHEN c.owner_id = cm.user_id THEN TRUE
                         ELSE FALSE

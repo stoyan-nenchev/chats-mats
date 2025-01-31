@@ -12,13 +12,15 @@ interface Props {
     senderId: string;
     receiverId: string | null;
     channelId: string | null;
+    messages: { message: string; isReceived: boolean }[];
+    setMessages: React.Dispatch<React.SetStateAction<{ message: string; isReceived: boolean }[]>>;
 }
 
 const formSchema = z.object({
     message: z.string().max(2000),
 })
 
-export function SendMessageForm({ senderId, receiverId, channelId }: Props) {
+export function SendMessageForm({ senderId, receiverId, channelId, messages, setMessages}: Props) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -26,7 +28,7 @@ export function SendMessageForm({ senderId, receiverId, channelId }: Props) {
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    async function onSubmit(values: z.infer<typeof formSchema>) {
         const messageRequest = {
             content: values.message,
             senderId: senderId,
@@ -34,24 +36,25 @@ export function SendMessageForm({ senderId, receiverId, channelId }: Props) {
             channelId: channelId || null,
         };
 
-        fetch("/api/messages", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(messageRequest),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Failed to send message");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log("Message sent successfully:", data);
-                form.reset();
-            })
-            .catch((error) => {
-                console.error("Error sending message:", error);
+        try {
+            const response = await fetch("/api/messages", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(messageRequest),
             });
+
+            if (!response.ok) {
+                throw new Error("Failed to send message");
+            }
+
+            const newMessage = await response.json();
+
+            setMessages([...messages, {message: newMessage.content, isReceived: false}]);
+
+            form.reset();
+        } catch (error) {
+            console.error("Error sending message:", error);
+        }
     }
 
     return (

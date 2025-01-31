@@ -33,7 +33,7 @@ public class User extends BaseEntitySoftDelete {
 
     @ManyToMany
     @JoinTable(
-            name = "user_friends",
+            name = "friends",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )

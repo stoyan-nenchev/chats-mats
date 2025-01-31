@@ -73,6 +73,14 @@ public class ChannelResource {
         return ResponseEntity.ok(updatedChannel);
     }
 
+    @PutMapping("/{channelId}/members")
+    public ResponseEntity<ChannelDTO> updateMemberRole(
+            @PathVariable UUID channelId,
+            @RequestBody @Valid ChannelMemberRequest request) {
+        ChannelDTO updatedChannel = channelService.updateMember(channelId, request);
+        return ResponseEntity.ok(updatedChannel);
+    }
+
     @DeleteMapping("/{channelId}/members")
     public ResponseEntity<ChannelDTO> removeMember(
             @PathVariable UUID channelId,

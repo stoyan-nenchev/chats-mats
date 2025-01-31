@@ -9,6 +9,7 @@ import java.util.UUID;
 public class MessageDTO {
     private UUID id;
     private String content;
+    private UUID senderId;
     private UUID receiverId;
     private UUID channelId;
     private String status;

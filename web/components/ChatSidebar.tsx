@@ -35,6 +35,7 @@ interface Friend {
 interface Channel {
     id: string;
     name: string;
+    description: string;
     message: string;
 }
 
@@ -208,7 +209,7 @@ const ChatSidebar: FC<{ onSelectChat: (receiverId?: string, channelId?: string) 
                                 badge={friend.status}
                                 onClick={() => handleSelect(friend.id, undefined)}
                                 isSelected={selectedChat?.receiverId === friend.id}
-                            />
+                                id={friend.id}/>
                         ))}
                     </div>
                 </ResizablePanel>
@@ -232,12 +233,15 @@ const ChatSidebar: FC<{ onSelectChat: (receiverId?: string, channelId?: string) 
                         {channels.map((channel) => (
                             <SidebarComponent
                                 key={channel.id}
+                                id={channel.id}
+                                info={channel.description}
                                 username={channel.name}
                                 message={channel.message}
                                 onRemove={() => handleRemoveChannel(channel.id)}
                                 badge={null}
                                 onClick={() => handleSelect(undefined, channel.id)}
                                 isSelected={selectedChat?.channelId === channel.id}
+                                isChannel={true}
                             />
                         ))}
                     </div>

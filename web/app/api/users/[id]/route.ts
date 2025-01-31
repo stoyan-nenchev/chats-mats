@@ -6,15 +6,14 @@ interface UserUpdateRequest {
     email: string;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const id = (await params).id;
     const cookieStore = await cookies();
     const token = cookieStore.get('token')?.value;
     if (!token) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const url = new URL(request.url);
-    const id = url.searchParams.get('userId');
     if (!id) {
         return NextResponse.json({ error: 'Missing user id.' }, { status: 401 });
     }

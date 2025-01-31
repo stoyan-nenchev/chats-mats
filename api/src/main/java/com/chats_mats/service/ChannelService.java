@@ -74,14 +74,15 @@ public class ChannelService {
         return channelMapper.toDTO(channel);
     }
 
+    //TODO: Add channel owner and admin restriction
     public ChannelDTO addMember(UUID channelId, ChannelMemberRequest request) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new NotFoundException("Channel not found."));
 
-        User user = userRepository.findById(request.getRequesterId())
+        User user = userRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new NotFoundException("User not found."));
 
-        if (!channelMemberRepository.existsByUser_IdAndChannel_Id(user.getId(), channel.getId())) {
+        if (!channelMemberRepository.existsByUserIdAndChannelId(user.getId(), channel.getId())) {
             ChannelMember channelMember = new ChannelMember();
             channelMember.setUser(user);
             channelMember.setChannel(channel);
@@ -94,14 +95,35 @@ public class ChannelService {
         return channelMapper.toDTOWithMembers(channel);
     }
 
+    //TODO: Add channel owner and admin restriction
+    public ChannelDTO updateMember(UUID channelId, ChannelMemberRequest request) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new NotFoundException("Channel not found."));
+
+        User user = userRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new NotFoundException("User not found."));
+
+        if (channelMemberRepository.existsByUserIdAndChannelId(user.getId(), channel.getId())) {
+            ChannelMember channelMember = channelMemberRepository.findByUserIdAndChannelId(user.getId(), channel.getId())
+                    .orElseThrow(() -> new NotFoundException("Channel member not found."));
+            channelMember.setRole(request.getRole());
+            channelMemberRepository.save(channelMember);
+        } else {
+            throw new UnprocessableEntityException("User is not part of the channel.");
+        }
+
+        return channelMapper.toDTOWithMembers(channel);
+    }
+
+    //TODO: Add channel owner and admin restriction
     public ChannelDTO removeMember(UUID channelId, ChannelMemberRequest request) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new NotFoundException("Channel not found."));
 
-        User user = userRepository.findById(request.getRequesterId())
+        User user = userRepository.findById(request.getMemberId())
                 .orElseThrow(() -> new NotFoundException("User not found."));
 
-        ChannelMember channelMember = channelMemberRepository.findByUser_IdAndChannel_Id(user.getId(), channel.getId())
+        ChannelMember channelMember = channelMemberRepository.findByUserIdAndChannelId(user.getId(), channel.getId())
                 .orElseThrow(() -> new UnprocessableEntityException("User is already not a member in the channel."));
 
         channelMemberRepository.delete(channelMember);
@@ -118,7 +140,7 @@ public class ChannelService {
     public ChannelDTO getChannelById(UUID id) {
         Channel channel = channelRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Channel not found."));
-        return channelMapper.toDTO(channel);
+        return channelMapper.toDTOWithMembers(channel);
     }
 
     private void validateOwnerRequest(UUID channelId, UUID ownerId) {
